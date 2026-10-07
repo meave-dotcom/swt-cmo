@@ -1,0 +1,46 @@
+name: Friday — plan and draft next week
+
+on:
+  schedule:
+    - cron: "10 6 * * 5"   # Fridays 09:10 Nairobi time (06:10 UTC)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  friday:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      SMTP_USER: ${{ secrets.SMTP_USER }}
+      SMTP_PASS: ${{ secrets.SMTP_PASS }}
+      REPORT_TO: info@storieswetell.xyz
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: pip install -r requirements.txt
+      - run: npm install -g @anthropic-ai/claude-code
+
+      - name: CMO agent — plan and draft
+        run: |
+          claude -p "You are running unattended. Read CLAUDE.md. Then:
+          1. Follow .claude/skills/weekly-plan/SKILL.md for next week.
+          2. Follow .claude/skills/draft-posts/SKILL.md for every LinkedIn and X item in that plan.
+          3. Email the plan file with: python scripts/send_email.py --subject 'SWT plan + drafts for next week' --file <the plan file>
+          Log every action with scripts/log_action.py. Do not publish anything anywhere." \
+            --permission-mode acceptEdits \
+            --allowedTools "Read,Write,Edit,Glob,Grep,WebFetch,WebSearch,Bash(python scripts/*),Bash(python3 scripts/*)"
+
+      - name: Save drafts to the repo
+        if: always()
+        run: |
+          git config user.name "swt-cmo-agent"
+          git config user.email "info@storieswetell.xyz"
+          git add drafts logs || true
+          git diff --cached --quiet || git commit -m "CMO agent: plan + drafts $(date -u +%F)"
+          git push

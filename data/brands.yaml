@@ -1,0 +1,22 @@
+# Terms that count as "we were mentioned" (case-insensitive, matched in answer text and cited URLs)
+ours:
+  terms:
+    - Stories We Tell
+    - storieswetell
+    - Africa Startup Story
+    - zuafrique
+    - Meave Apondi
+    - Meave Akinyi
+    - Afribit documentary
+
+# Peers to watch in AI answers. These are African tech media outlets to start with;
+# add the agencies and studios you actually lose work to (you know them better than any scrape).
+peers:
+  - {name: TechCabal, terms: [TechCabal, techcabal.com]}
+  - {name: Techpoint Africa, terms: [Techpoint Africa, techpoint.africa]}
+  - {name: Disrupt Africa, terms: [Disrupt Africa, disrupt-africa.com]}
+  - {name: Benjamin Dada, terms: [Benjamindada, benjamindada.com]}
+  - {name: Launch Base Africa, terms: [Launch Base Africa, launchbaseafrica.com]}
+  - {name: Rest of World, terms: [Rest of World, restofworld.org]}
+  - {name: Semafor Africa, terms: [Semafor Africa]}
+  - {name: The Big Deal, terms: [thebigdeal.substack.com, "The Big Deal newsletter"]}
